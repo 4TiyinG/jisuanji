@@ -1,0 +1,605 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e1e5ea 100%);
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+        
+        .calculator {
+            width: 100%;
+            max-width: 340px;
+            background: linear-gradient(145deg, #f8f9fa, #eef0f3);
+            border-radius: 28px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.08),
+                0 8px 16px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            overflow: visible;
+            padding: 18px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        /* 增强光场效果容器 */
+        .light-field {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            border-radius: 28px;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .light-spot {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--glow-color, rgba(255, 204, 0, 0.5)) 0%, rgba(255, 255, 255, 0) 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 1;
+            filter: brightness(1.1) saturate(1.2);
+            mix-blend-mode: screen;
+        }
+        
+        /* 状态栏样式 */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0 16px;
+            color: #6c757d;
+            font-size: 14px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .left-status {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .back-arrow {
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        
+        .back-arrow:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .back-arrow::before {
+            content: "←";
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .right-status {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+        }
+        
+        .more-options {
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            z-index: 100;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        
+        .more-options:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .more-options::before {
+            content: "⋯";
+            font-size: 18px;
+            transform: rotate(90deg);
+            font-weight: 500;
+        }
+        
+        /* 显示屏样式 - 增强光场质感 */
+        .display {
+            padding: 18px 16px;
+            margin-bottom: 16px;
+            background: linear-gradient(145deg, #f8f9fa, #ffffff);
+            border-radius: 18px;
+            text-align: right;
+            min-height: 130px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+            z-index: 2;
+            box-shadow: 
+                inset 0 2px 8px rgba(0, 0, 0, 0.03),
+                0 1px 0 rgba(255, 255, 255, 0.9),
+                0 4px 12px rgba(0, 0, 0, 0.04);
+            /* 增强光场质感 */
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: linear-gradient(145deg, rgba(248, 249, 250, 0.9), rgba(255, 255, 255, 0.95));
+            backdrop-filter: blur(10px);
+        }
+        
+        .display-content {
+            color: #212529;
+            font-size: 38px;
+            font-weight: 400;
+            line-height: 1.1;
+            word-break: break-all;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            transition: all 0.2s ease;
+        }
+        
+        .display-expression {
+            color: #6c757d;
+            font-size: 16px;
+            min-height: 22px;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+        
+        .math-symbols {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .math-symbol {
+            background: linear-gradient(145deg, #e9ecef, #f8f9fa);
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #495057;
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.03),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .math-symbol:hover {
+            transform: translateY(-1px);
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+        
+        /* 按钮区域样式 - 增强光场效果 */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .btn {
+            border: none;
+            outline: none;
+            height: 62px;
+            width: 62px;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: visible;
+            box-shadow: 
+                0 6px 12px rgba(0, 0, 0, 0.05),
+                0 2px 4px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            margin: 0 auto;
+            /* 增强光场质感 */
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.9));
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 60%);
+            opacity: 0.7;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 16px rgba(0, 0, 0, 0.08),
+                0 3px 6px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+        
+        .btn:active {
+            transform: translateY(1px) scale(0.98);
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.1),
+                inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:active::before {
+            opacity: 1;
+        }
+        
+        .btn-number {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            color: #212529;
+        }
+        
+        .btn-operator {
+            background: linear-gradient(145deg, #e9ecef, #f8f9fa);
+            color: #495057;
+            font-weight: 500;
+        }
+        
+        .btn-scientific {
+            background: linear-gradient(145deg, #e3f2fd, #bbdefb);
+            color: #1565c0;
+            font-size: 18px;
+        }
+        
+        .btn-equals {
+            background: linear-gradient(145deg, #ff9500, #ff7b00);
+            color: white;
+            font-weight: 500;
+            box-shadow: 
+                0 6px 12px rgba(255, 149, 0, 0.3),
+                0 2px 4px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+        
+        .btn-equals:hover {
+            box-shadow: 
+                0 8px 16px rgba(255, 149, 0, 0.4),
+                0 3px 6px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+        
+        .btn-equals:active {
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.1),
+                inset 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-clear {
+            color: #ff3b30;
+            font-weight: 500;
+        }
+        
+        /* 增强光效类 - 符合ColorOS 16光场设计 */
+        .btn-glow {
+            box-shadow: 
+                0 0 20px var(--glow-color, rgba(255, 204, 0, 0.5)),
+                0 6px 12px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9),
+                0 0 30px var(--glow-color, rgba(255, 204, 0, 0.2));
+            transform: translateY(-2px) scale(1.02);
+            z-index: 10;
+        }
+        
+        .adjacent-glow {
+            box-shadow: 
+                0 0 15px var(--glow-color, rgba(255, 204, 0, 0.3)),
+                0 3px 6px rgba(0, 0, 0, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9),
+                0 0 20px var(--glow-color, rgba(255, 204, 0, 0.15));
+            transform: translateY(-1px);
+            z-index: 5;
+        }
+        
+        /* 新增光晕扩散效果 */
+        .btn-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--glow-color, rgba(255, 204, 0, 0.3)) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: rippleEffect 0.6s ease-out;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        @keyframes rippleEffect {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 0.7;
+            }
+            100% {
+                width: 120px;
+                height: 120px;
+                opacity: 0;
+            }
+        }
+        
+        /* 科学计算模式按钮 */
+        .scientific-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 16px;
+            position: relative;
+            z-index: 2;
+            display: none;
+        }
+        
+        .scientific-buttons.show {
+            display: grid;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .scientific-btn {
+            height: 50px;
+            width: 50px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+        
+        /* 进制转换显示 */
+        .base-conversion {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(233, 236, 239, 0.5);
+            border-radius: 12px;
+            font-size: 12px;
+            color: #495057;
+            display: none;
+        }
+        
+        .base-conversion.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .base-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .base-value {
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        
+        /* 颜色选择面板 */
+        .color-panel, .scientific-panel, .apps-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            padding: 24px;
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+            width: 280px;
+            animation: fadeIn 0.3s ease;
+            /* 增强光场质感 */
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+        }
+        
+        .scientific-panel, .apps-panel {
+            width: 320px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        .color-panel.show, .scientific-panel.show, .apps-panel.show {
+            display: flex;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .panel-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #212529;
+            letter-spacing: -0.3px;
+        }
+        
+        .close-panel {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #6c757d;
+            font-size: 22px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        
+        .close-panel:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .color-options, .scientific-options, .app-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        
+        .app-options {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .color-option, .scientific-option, .app-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 16px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: linear-gradient(145deg, #f8f9fa, #ffffff);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .color-option:hover, .scientific-option:hover, .app-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        }
+        
+        .color-preview {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid #e9ecef;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        
+        .color-option:hover .color-preview {
+            transform: scale(1.1);
+        }
+        
+        .scientific-icon, .app-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(145deg, #e9ecef, #f8f9fa);
+            font-size: 20px;
+            color: #495057;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+        
+        .scientific-option:hover .scientific-icon, .app-option:hover .app-icon {
+            transform: scale(1.1);
+        }
+        
+        .option-name, .app-name {
+            font-size: 13px;
+            color: #495057;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 9999;
+            display: none;
+            backdrop-filter: blur(4px);
+        }
+        
+        .overlay.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        /* 模式切换 */
+        .mode-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .toggle-btn {
+            background: linear-gradient(145deg, #e9ecef, #f8f9fa);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .toggle-btn.active {
+            background: linear-gradient(145deg, #4dabf7, #339af0);
+            color: white;
+            box-shadow: 0 4px 8px rgba(77, 171, 247, 0.3);
+        }
+        
+        .toggle-btn:first-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        
+        .toggle-btn:last-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科学计算器</title>
+        <link rel="stylesheet" href="style.css">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <!-- 光场效果层 -->
+        <div class="light-field" id="lightField"></div>
+        
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="left-status">
+                <div class="back-arrow" id="backArrow"></div>
+                <div>π</div>
+                <div>科学</div>
+            </div>
+            <div class="right-status">
+                <div>E</div>
+                <div class="more-options" id="moreOptions"></div>
+            </div>
+        </div>
+        
+        <!-- 显示屏 -->
+        <div class="display">
+            <div class="display-expression" id="displayExpression"></div>
+            <div class="display-content" id="displayContent">0</div>
+            <div class="math-symbols">
+                <div class="math-symbol">√π</div>
+                <div class="math-symbol">e =</div>
+                <div class="math-symbol">®</div>
+                <div class="math-symbol">∴</div>
+                <div class="math-symbol">△</div>
+            </div>
+        </div>
+        
+        <!-- 进制转换显示 -->
+        <div class="base-conversion" id="baseConversion">
+            <div class="base-item">
+                <div>二进制</div>
+                <div class="base-value" id="binaryValue">0</div>
+            </div>
+            <div class="base-item">
+                <div>八进制</div>
+                <div class="base-value" id="octalValue">0</div>
+            </div>
+            <div class="base-item">
+                <div>十进制</div>
+                <div class="base-value" id="decimalValue">0</div>
+            </div>
+            <div class="base-item">
+                <div>十六进制</div>
+                <div class="base-value" id="hexValue">0</div>
+            </div>
+        </div>
+        
+        <!-- 模式切换 -->
+        <div class="mode-toggle">
+            <button class="toggle-btn active" id="basicMode">基础</button>
+            <button class="toggle-btn" id="scientificMode">科学</button>
+        </div>
+        
+        <!-- 基础按钮区域 -->
+        <div class="buttons" id="basicButtons">
+            <button class="btn btn-operator btn-clear">AC</button>
+            <button class="btn btn-operator">%</button>
+            <button class="btn btn-operator">⌫</button>
+            <button class="btn btn-operator">÷</button>
+            
+            <button class="btn btn-number">7</button>
+            <button class="btn btn-number">8</button>
+            <button class="btn btn-number">9</button>
+            <button class="btn btn-operator">×</button>
+            
+            <button class="btn btn-number">4</button>
+            <button class="btn btn-number">5</button>
+            <button class="btn btn-number">6</button>
+            <button class="btn btn-operator">-</button>
+            
+            <button class="btn btn-number">1</button>
+            <button class="btn btn-number">2</button>
+            <button class="btn btn-number">3</button>
+            <button class="btn btn-operator">+</button>
+            
+            <button class="btn btn-number">00</button>
+            <button class="btn btn-number">0</button>
+            <button class="btn btn-number">.</button>
+            <button class="btn btn-equals">=</button>
+        </div>
+        
+        <!-- 科学计算按钮区域 -->
+        <div class="scientific-buttons" id="scientificButtons">
+            <button class="btn btn-scientific scientific-btn">sin</button>
+            <button class="btn btn-scientific scientific-btn">cos</button>
+            <button class="btn btn-scientific scientific-btn">tan</button>
+            <button class="btn btn-scientific scientific-btn">log</button>
+            <button class="btn btn-scientific scientific-btn">ln</button>
+            
+            <button class="btn btn-scientific scientific-btn">x²</button>
+            <button class="btn btn-scientific scientific-btn">x³</button>
+            <button class="btn btn-scientific scientific-btn">xʸ</button>
+            <button class="btn btn-scientific scientific-btn">√</button>
+            <button class="btn btn-scientific scientific-btn">∛</button>
+            
+            <button class="btn btn-scientific scientific-btn">π</button>
+            <button class="btn btn-scientific scientific-btn">e</button>
+            <button class="btn btn-scientific scientific-btn">!</button>
+            <button class="btn btn-scientific scientific-btn">(</button>
+            <button class="btn btn-scientific scientific-btn">)</button>
+            
+            <button class="btn btn-scientific scientific-btn">BIN</button>
+            <button class="btn btn-scientific scientific-btn">OCT</button>
+            <button class="btn btn-scientific scientific-btn">DEC</button>
+            <button class="btn btn-scientific scientific-btn">HEX</button>
+            <button class="btn btn-scientific scientific-btn">RAD</button>
+        </div>
+    </div>
+    
+    <!-- 颜色选择面板 -->
+    <div class="overlay" id="overlay"></div>
+    <div class="color-panel" id="colorPanel">
+        <div class="panel-header">
+            <div class="panel-title">选择光效颜色</div>
+            <div class="close-panel" id="closeColorPanel">×</div>
+        </div>
+        <div class="color-options">
+            <div class="color-option" data-color="#ffcc00">
+                <div class="color-preview" style="background-color: #ffcc00;"></div>
+                <span class="option-name">金色</span>
+            </div>
+            <div class="color-option" data-color="#4dabf7">
+                <div class="color-preview" style="background-color: #4dabf7;"></div>
+                <span class="option-name">蓝色</span>
+            </div>
+            <div class="color-option" data-color="#51cf66">
+                <div class="color-preview" style="background-color: #51cf66;"></div>
+                <span class="option-name">绿色</span>
+            </div>
+            <div class="color-option" data-color="#ff6b6b">
+                <div class="color-preview" style="background-color: #ff6b6b;"></div>
+                <span class="option-name">红色</span>
+            </div>
+            <div class="color-option" data-color="#cc5de8">
+                <div class="color-preview" style="background-color: #cc5de8;"></div>
+                <span class="option-name">紫色</span>
+            </div>
+            <div class="color-option" data-color="#ff922b">
+                <div class="color-preview" style="background-color: #ff922b;"></div>
+                <span class="option-name">橙色</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 科学计算功能面板 -->
+    <div class="scientific-panel" id="scientificPanel">
+        <div class="panel-header">
+            <div class="panel-title">科学计算功能</div>
+            <div class="close-panel" id="closeScientificPanel">×</div>
+        </div>
+        <div class="scientific-options">
+            <div class="scientific-option" data-function="baseConversion">
+                <div class="scientific-icon">B</div>
+                <span class="option-name">进制转换</span>
+            </div>
+            <div class="scientific-option" data-function="trigonometry">
+                <div class="scientific-icon">θ</div>
+                <span class="option-name">三角函数</span>
+            </div>
+            <div class="scientific-option" data-function="logarithm">
+                <div class="scientific-icon">log</div>
+                <span class="option-name">对数函数</span>
+            </div>
+            <div class="scientific-option" data-function="constants">
+                <div class="scientific-icon">π</div>
+                <span class="option-name">数学常数</span>
+            </div>
+            <div class="scientific-option" data-function="memory">
+                <div class="scientific-icon">M</div>
+                <span class="option-name">存储功能</span>
+            </div>
+            <div class="scientific-option" data-function="history">
+                <div class="scientific-icon">H</div>
+                <span class="option-name">历史记录</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 应用系统面板 -->
+    <div class="apps-panel" id="appsPanel">
+        <div class="panel-header">
+            <div class="panel-title">应用系统</div>
+            <div class="close-panel" id="closeAppsPanel">×</div>
+        </div>
+        <div class="app-options">
+            <div class="app-option" data-app="browser">
+                <div class="app-icon">🌐</div>
+                <span class="app-name">浏览器</span>
+            </div>
+            <div class="app-option" data-app="calendar">
+                <div class="app-icon">📅</div>
+                <span class="app-name">日历</span>
+            </div>
+            <div class="app-option" data-app="notes">
+                <div class="app-icon">📝</div>
+                <span class="app-name">便签</span>
+            </div>
+            <div class="app-option" data-app="settings">
+                <div class="app-icon">⚙️</div>
+                <span class="app-name">设置</span>
+            </div>
+            <div class="app-option" data-app="converter">
+                <div class="app-icon">🔄</div>
+                <span class="app-name">单位换算</span>
+            </div>
+            <div class="app-option" data-app="timer">
+                <div class="app-icon">⏱️</div>
+                <span class="app-name">计时器</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
