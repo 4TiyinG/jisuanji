@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>😡👿😡</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+
+    </style>
+</head>
+<body>
+    <div class="calculator" id="calculator">
+        <!-- 光场效果层 -->
+        <div class="light-field" id="lightField"></div>
+        
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="left-status">
+                <div class="back-arrow" id="backArrow"></div>
+                <div class="mode-btn" id="modeBtn"></div>
+                <div id="currentMode">标准</div>
+            </div>
+            <div class="right-status">
+                <div class="fullscreen-btn" id="fullscreenBtn"></div>
+                <div class="more-options" id="moreOptions">⋯</div>
+            </div>
+        </div>
+        
+        <!-- 显示屏 -->
+        <div class="display">
+            <div class="base-indicator" id="baseIndicator">DEC</div>
+            <div class="display-content" id="display">0</div>
+            <div class="math-symbols">
+                <div class="math-symbol" data-symbol="π">π</div>
+                <div class="math-symbol" data-symbol="e">e</div>
+                <div class="math-symbol" data-symbol="√">√</div>
+                <div class="math-symbol" data-symbol="^">x^y</div>
+                <div class="math-symbol" data-symbol="!">x!</div>
+            </div>
+        </div>
+        
+        <!-- 按钮区域 -->
+        <div class="buttons" id="buttons">
+            <!-- 第一行 -->
+            <button class="btn btn-operator btn-clear" id="clearBtn">AC</button>
+            <button class="btn btn-operator" id="percentBtn">%</button>
+            <button class="btn btn-operator" id="deleteBtn">⌫</button>
+            <button class="btn btn-operator" id="divideBtn">÷</button>
+            <button class="btn btn-scientific scientific-btn" data-scientific="sin">sin</button>
+            
+            <!-- 第二行 -->
+            <button class="btn btn-number" data-number="7">7</button>
+            <button class="btn btn-number" data-number="8">8</button>
+            <button class="btn btn-number" data-number="9">9</button>
+            <button class="btn btn-operator" id="multiplyBtn">×</button>
+            <button class="btn btn-scientific scientific-btn" data-scientific="cos">cos</button>
+            
+            <!-- 第三行 -->
+            <button class="btn btn-number" data-number="4">4</button>
+            <button class="btn btn-number" data-number="5">5</button>
+            <button class="btn btn-number" data-number="6">6</button>
+            <button class="btn btn-operator" id="subtractBtn">-</button>
+            <button class="btn btn-scientific scientific-btn" data-scientific="tan">tan</button>
+            
+            <!-- 第四行 -->
+            <button class="btn btn-number" data-number="1">1</button>
+            <button class="btn btn-number" data-number="2">2</button>
+            <button class="btn btn-number" data-number="3">3</button>
+            <button class="btn btn-operator" id="addBtn">+</button>
+            <button class="btn btn-scientific scientific-btn" data-scientific="log">log</button>
+            
+            <!-- 第五行 -->
+            <button class="btn btn-number" data-number="00">00</button>
+            <button class="btn btn-number" data-number="0">0</button>
+            <button class="btn btn-number" id="decimalBtn">.</button>
+            <button class="btn btn-equals" id="equalsBtn">=</button>
+            <button class="btn btn-conversion" id="conversionBtn">进制</button>
+        </div>
+    </div>
+    
+    <!-- 遮罩层 -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- 颜色选择面板 -->
+    <div class="color-panel" id="colorPanel">
+        <div class="panel-header">
+            <div class="panel-title">选择光效颜色</div>
+            <div class="close-panel" id="closeColorPanel">×</div>
+        </div>
+        <div class="color-options">
+            <div class="color-option" data-color="#ffcc00">
+                <div class="color-preview" style="background-color: #ffcc00;"></div>
+                <span class="color-name">金色</span>
+            </div>
+            <div class="color-option" data-color="#4dabf7">
+                <div class="color-preview" style="background-color: #4dabf7;"></div>
+                <span class="color-name">蓝色</span>
+            </div>
+            <div class="color-option" data-color="#51cf66">
+                <div class="color-preview" style="background-color: #51cf66;"></div>
+                <span class="color-name">绿色</span>
+            </div>
+            <div class="color-option" data-color="#ff6b6b">
+                <div class="color-preview" style="background-color: #ff6b6b;"></div>
+                <span class="color-name">红色</span>
+            </div>
+            <div class="color-option" data-color="#cc5de8">
+                <div class="color-preview" style="background-color: #cc5de8;"></div>
+                <span class="color-name">紫色</span>
+            </div>
+            <div class="color-option" data-color="#ff922b">
+                <div class="color-preview" style="background-color: #ff922b;"></div>
+                <span class="color-name">橙色</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 光效设置面板 -->
+    <div class="effect-settings-panel" id="effectSettingsPanel">
+        <div class="panel-header">
+            <div class="panel-title">光效设置</div>
+            <div class="close-panel" id="closeEffectPanel">×</div>
+        </div>
+        <div class="effect-settings">
+            <div class="setting-group">
+                <div class="setting-title">涟漪效果设置</div>
+                
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <span>涟漪颜色</span>
+                        <span class="setting-value" id="rippleColorValue">金色</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-track" id="colorTrack"></div>
+                        <div class="slider-thumb" id="colorThumb"></div>
+                        <input type="range" class="setting-range" id="rippleColorRange" min="0" max="360" value="50" step="1">
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <span>涟漪强度</span>
+                        <span class="setting-value" id="rippleIntensityValue">30%</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-track" id="intensityTrack"></div>
+                        <div class="slider-thumb" id="intensityThumb"></div>
+                        <input type="range" class="setting-range" id="rippleIntensityRange" min="10" max="100" value="30" step="1">
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <span>涟漪半径</span>
+                        <span class="setting-value" id="rippleRadiusValue">100px</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-track" id="radiusTrack"></div>
+                        <div class="slider-thumb" id="radiusThumb"></div>
+                        <input type="range" class="setting-range" id="rippleRadiusRange" min="50" max="200" value="100" step="10">
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <span>涟漪持续时间</span>
+                        <span class="setting-value" id="rippleDurationValue">0.6s</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-track" id="durationTrack"></div>
+                        <div class="slider-thumb" id="durationThumb"></div>
+                        <input type="range" class="setting-range" id="rippleDurationRange" min="3" max="15" value="6" step="1">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="setting-group">
+                <div class="setting-title">相邻按钮效果</div>
+                
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <span>影响范围</span>
+                        <span class="setting-value" id="neighborRadiusValue">2</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-track" id="neighborTrack"></div>
+                        <div class="slider-thumb" id="neighborThumb"></div>
+                        <input type="range" class="setting-range" id="neighborRadiusRange" min="0" max="4" value="2" step="1">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 进制转换面板 -->
+    <div class="conversion-panel" id="conversionPanel">
+        <div class="panel-header">
+            <div class="panel-title">进制转换</div>
+            <div class="close-panel" id="closeConversionPanel">×</div>
+        </div>
+        <div class="conversion-options">
+            <input type="text" class="conversion-input" id="conversionInput" placeholder="输入数字">
+            <div class="conversion-buttons">
+                <button class="conversion-btn" data-conversion="dec2bin">DEC→BIN</button>
+                <button class="conversion-btn" data-conversion="dec2oct">DEC→OCT</button>
+                <button class="conversion-btn" data-conversion="dec2hex">DEC→HEX</button>
+                <button class="conversion-btn" data-conversion="bin2dec">BIN→DEC</button>
+                <button class="conversion-btn" data-conversion="oct2dec">OCT→DEC</button>
+                <button class="conversion-btn" data-conversion="hex2dec">HEX→DEC</button>
+            </div>
+            <div class="conversion-result" id="conversionResult"></div>
+        </div>
+    </div>
+    
+    <!-- 加载动画 -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- 提示信息 -->
+    <div class="notification" id="notification">
+        <div class="notification-content" id="notificationContent"></div>
+    </div>
+<script>
+</script> <script src="script.js"></script>
+</body>
+</html>
